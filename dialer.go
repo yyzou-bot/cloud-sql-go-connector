@@ -376,6 +376,28 @@ func (d *Dialer) Dial(ctx context.Context, icn string, opts ...DialOption) (conn
 		}
 	}
 
+       // Psql specific request
+       sslRequest := []byte{0, 0, 0, 8, 4, 210, 22, 47}
+
+       // Send SSL request
+       _, err = conn.Write(sslRequest)
+       if err != nil {
+               return nil, errtype.NewDialError("failed to write psql specific SSL request", cn.String(), err)
+       }
+
+       // Read response
+       sbuf := make([]byte, 1)
+       _, err = io.ReadFull(conn, sbuf)
+       if err != nil {
+               return nil, errtype.NewDialError("failed to read ", cn.String(), err)
+       }
+
+       // Check response
+       if sbuf[0] != 'S' {
+               return nil, errtype.NewDialError("server doesn't support TLS", cn.String(), err)
+       }
+
+
 	tlsConn := tls.Client(conn, ci.TLSConfig())
 	err = tlsConn.HandshakeContext(ctx)
 	if err != nil {
