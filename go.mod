@@ -1,6 +1,6 @@
 module cloud.google.com/go/cloudsqlconn
 
-go 1.17.0
+go 1.23.0
 
 require (
 	cloud.google.com/go/auth v0.16.2
