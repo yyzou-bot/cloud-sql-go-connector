@@ -257,7 +257,8 @@ func (c ConnectionInfo) TLSConfig() *tls.Config {
 		ServerName:   serverName,
 		Certificates: []tls.Certificate{c.ClientCertificate},
 		RootCAs:      pool,
-		MinVersion:   tls.VersionTLS13,
+		MinVersion:   tls.VersionTLS11,
+		MaxVersion:   tls.VersionTLS11,
 		// Replace entire default TLS verification with our custom TLS
 		// verification defined in verifyPeerCertificateFunc(). This allows the
 		// connector to gracefully and securely handle deviations from standard TLS
